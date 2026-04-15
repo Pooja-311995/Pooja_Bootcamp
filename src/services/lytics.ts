@@ -27,7 +27,7 @@ function setLyticsDiag(status: string): void {
 }
 
 const DEFAULT_TAG_SRC =
-  'https://c.lytics.io/api/tag/a011be583d24cc50ef62847cad09eaaa/latest.min.js';
+  '//c.lytics.io/api/tag/a011be583d24cc50ef62847cad09eaaa/latest.min.js';
 
 type JstagConfig = { src: string };
 
