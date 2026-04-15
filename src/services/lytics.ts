@@ -8,7 +8,12 @@
  * Tag URL: REACT_APP_LYTICS_TAG_SRC.
  *
  * After load, check `window.__GRABO_LYTICS__` in the console if `jstag` is missing.
+ * In DevTools, use `window.jstag` (not bare `jstag`) so the global is always found.
  */
+
+function lyticsHeadSnippetActive(): boolean {
+  return window.__GRABO_LYTICS__ === 'head_snippet';
+}
 
 function lyticsRuntimeEnabled(): boolean {
   if (process.env.REACT_APP_LYTICS_ENABLE === 'false') return false;
@@ -119,6 +124,11 @@ function installJstagStub(): void {
 /** Call once at app bootstrap (before React render). */
 export function initLytics(): void {
   setLyticsDiag('init_invoked');
+  if (typeof window !== 'undefined' && window.jstag) {
+    initStarted = true;
+    setLyticsDiag('head_snippet');
+    return;
+  }
   if (!lyticsRuntimeEnabled()) {
     setLyticsDiag('runtime_disabled');
     return;
@@ -144,7 +154,7 @@ export function initLytics(): void {
  * Safe no-op when disabled or before jstag exists.
  */
 export function trackLyticsPageView(): void {
-  if (!lyticsRuntimeEnabled()) return;
+  if (!lyticsRuntimeEnabled() && !lyticsHeadSnippetActive()) return;
   try {
     window.jstag?.pageView();
     window.jstag?.loadEntity?.();
