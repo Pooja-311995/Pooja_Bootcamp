@@ -1,7 +1,13 @@
 /**
- * Lytics jstag — production only.
+ * Lytics jstag — enabled in production builds, or in dev when
+ * REACT_APP_LYTICS_ENABLE_IN_DEV=true (restart dev server after changing .env).
  * Tag URL can be overridden with REACT_APP_LYTICS_TAG_SRC.
  */
+
+function lyticsRuntimeEnabled(): boolean {
+  if (process.env.NODE_ENV === 'production') return true;
+  return process.env.REACT_APP_LYTICS_ENABLE_IN_DEV === 'true';
+}
 
 const DEFAULT_TAG_SRC =
   'https://c.lytics.io/api/tag/a011be583d24cc50ef62847cad09eaaa/latest.min.js';
@@ -99,7 +105,7 @@ function installJstagStub(): void {
 
 /** Call once at app bootstrap (before React render). */
 export function initLytics(): void {
-  if (process.env.NODE_ENV !== 'production') return;
+  if (!lyticsRuntimeEnabled()) return;
   if (initStarted) return;
   initStarted = true;
 
@@ -111,9 +117,9 @@ export function initLytics(): void {
   }
 }
 
-/** Fire on each route (including initial load). Safe no-op outside production or before jstag exists. */
+/** Fire on each route (including initial load). Safe no-op when disabled or before jstag exists. */
 export function trackLyticsPageView(): void {
-  if (process.env.NODE_ENV !== 'production') return;
+  if (!lyticsRuntimeEnabled()) return;
   try {
     window.jstag?.pageView();
   } catch (e) {
