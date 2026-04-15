@@ -1,46 +1,137 @@
-# Getting Started with Create React App
+# GRABO Coffee Shop - React Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React TypeScript application for GRABO Coffee Shop with Contentstack CMS integration.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- **React 18** with TypeScript
+- **React Router** for client-side routing
+- **Contentstack Integration** for dynamic content management
+- **Responsive Design** with mobile-first approach
+- **Modern Component Architecture** with reusable components
+- **Custom Hooks** for state management
+- **Coffee-themed Design** with beautiful UI
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable React components
+│   ├── Header.tsx      # Navigation header
+│   ├── Footer.tsx      # Site footer
+│   ├── HeroSection.tsx # Reusable hero section
+│   ├── MenuCard.tsx    # Coffee menu item card
+│   ├── LoadingSpinner.tsx
+│   └── ErrorMessage.tsx
+├── pages/              # Page components
+│   ├── Home.tsx        # Homepage
+│   ├── About.tsx       # About page
+│   ├── Services.tsx    # Services page
+│   ├── Menu.tsx        # Menu page with API integration
+│   └── Contact.tsx     # Contact page
+├── services/           # API services
+│   ├── apiConfig.ts    # Contentstack configuration
+│   └── apiService.ts   # API service methods
+├── types/              # TypeScript type definitions
+│   └── index.ts        # All type definitions
+├── utils/              # Utility functions and custom hooks
+│   └── useMenu.ts      # Custom hook for menu data
+├── assets/             # Static assets
+│   ├── styles/         # CSS files
+│   └── images/         # Images (copied to public/assets/)
+└── App.tsx             # Main app component with routing
+```
+
+## 🛠️ Available Scripts
 
 ### `npm start`
-
-Runs the app in the development mode.\
+Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### `npm run build`
+Builds the app for production to the `build` folder.
 
 ### `npm test`
+Launches the test runner in the interactive watch mode.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🔧 Setup Instructions
 
-### `npm run build`
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Start Development Server**
+   ```bash
+   npm start
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Build for Production**
+   ```bash
+   npm run build
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🌐 API Integration
 
-### `npm run eject`
+The application integrates with Contentstack CMS for dynamic content:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- **Content Type**: `card` (Coffee menu items)
+- **API Key**: Configured in `src/services/apiConfig.ts`
+- **Environment**: Development
+- **Features**: 
+  - Real-time menu loading
+  - Fallback content when API is unavailable
+  - Loading states and error handling
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📱 Pages
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- **Home (`/`)** - Homepage with hero section, about, services, and testimonials
+- **About (`/about`)** - About page
+- **Services (`/services`)** - Services page with detailed service descriptions
+- **Menu (`/menu`)** - Dynamic coffee menu from Contentstack
+- **Contact (`/contact`)** - Contact information page
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 🎨 Styling
 
-## Learn More
+- Uses existing CSS with React-compatible structure
+- Coffee-themed color scheme with gradient logos
+- Responsive design for all screen sizes
+- Smooth animations and hover effects
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🔄 Data Flow
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Menu Page**: Uses `useMenu` hook to fetch data from Contentstack
+2. **API Service**: Handles all Contentstack API calls
+3. **Type Safety**: Full TypeScript support with proper type definitions
+4. **Error Handling**: Graceful fallbacks and user-friendly error messages
+
+## 🚀 Deployment
+
+The app can be deployed to any static hosting service:
+
+1. Run `npm run build`
+2. Deploy the `build` folder to your hosting service
+3. Configure routing for single-page application
+
+## 🧪 Testing
+
+- Test pages: Visit `/menu` to see live Contentstack integration
+- Check browser console for API call logs
+- Verify responsive design on different screen sizes
+
+## 📝 Migration Notes
+
+This React application maintains all functionality from the original HTML version:
+- ✅ Same visual design and layout
+- ✅ Contentstack API integration
+- ✅ Responsive behavior
+- ✅ Navigation and routing
+- ✅ Coffee menu functionality
+- ✅ Loading states and error handling
+
+The React version adds:
+- ⭐ Component reusability
+- ⭐ Type safety with TypeScript
+- ⭐ Modern development experience
+- ⭐ Better state management
+- ⭐ Improved performance

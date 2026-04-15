@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grabo Email Service Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .log-container {
+            margin-top: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .log-entry {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .log-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .log-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .log-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .status-waiting {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+        
+        .status-sending {
+            background: #74b9ff;
+            color: #0984e3;
+        }
+        
+        .status-success {
+            background: #55efc4;
+            color: #00b894;
+        }
+        
+        .status-failed {
+            background: #fab1a0;
+            color: #d63031;
+        }
+        
+        .clear-btn {
+            background: #6c757d;
+            font-size: 14px;
+            padding: 8px 20px;
+            margin-top: 10px;
+        }
+        
+        .webhook-info {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .webhook-info code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☕ Grabo Email Service Tester</h1>
+        <p class="subtitle">Test your Contentstack email automation webhook</p>
+        
+        <div class="webhook-info">
+            <strong>Webhook URL:</strong><br>
+            <code>https://app.contentstack.com/automations-api/run/e4b5b323da00490bb572847a94b7ee06</code>
+        </div>
+        
+        <form id="emailForm">
+            <div class="input-group">
+                <label for="emailTo">Recipient Email:</label>
+                <input 
+                    type="email" 
+                    id="emailTo" 
+                    name="emailTo" 
+                    placeholder="pooja.mandwale@contentstack.com"
+                    value="pooja.mandwale@contentstack.com"
+                    required
+                >
+            </div>
+            
+            <div class="input-group">
+                <label for="emailSubject">Email Subject:</label>
+                <input 
+                    type="text" 
+                    id="emailSubject" 
+                    name="emailSubject" 
+                    placeholder="Test Email from Grabo"
+                    value="Test Email – Grabo Email Automation"
+                    required
+                >
+            </div>
+            
+            <div class="input-group">
+                <label for="emailBody">Email Body:</label>
+                <textarea 
+                    id="emailBody" 
+                    name="emailBody" 
+                    placeholder="Enter your email message here..."
+                    required
+                >Hi,
+
+This is a test email from Grabo to verify the email automation is working correctly.
+
+Test Details:
+• Sent at: [Will be added automatically]
+• Test ID: [Will be generated]
+
+If you're seeing this, the Contentstack automation webhook is configured properly!
+
+Warmly,
+Team Grabo</textarea>
+            </div>
+            
+            <button type="submit" id="sendBtn">📧 Send Test Email</button>
+            
+            <div id="status"></div>
+        </form>
+        
+        <div class="log-container">
+            <div class="log-title">📋 Console Log:</div>
+            <div id="logOutput"></div>
+            <button type="button" class="clear-btn" onclick="clearLogs()">Clear Logs</button>
+        </div>
+    </div>
+    
+    <script>
+        const logOutput = document.getElementById('logOutput');
+        const statusDiv = document.getElementById('status');
+        const form = document.getElementById('emailForm');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logOutput.appendChild(entry);
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+        
+        function clearLogs() {
+            logOutput.innerHTML = '';
+            statusDiv.innerHTML = '';
+        }
+        
+        function updateStatus(message, className) {
+            statusDiv.innerHTML = `<div class="status-badge ${className}">${message}</div>`;
+        }
+        
+        async function sendEmail(to, subject, body) {
+            try {
+                log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+                log('🚀 Starting email test...', 'info');
+                log(`📧 Recipient: ${to}`, 'info');
+                log(`📝 Subject: ${subject}`, 'info');
+                log(`📄 Body length: ${body.length} characters`, 'info');
+                
+                updateStatus('⏳ Sending...', 'status-sending');
+                
+                // Add timestamp and test ID to body
+                const testId = 'TEST-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                const enhancedBody = body
+                    .replace('[Will be added automatically]', new Date().toLocaleString())
+                    .replace('[Will be generated]', testId);
+                
+                const automationUrl = 'https://app.contentstack.com/automations-api/run/e4b5b323da00490bb572847a94b7ee06';
+                
+                const params = new URLSearchParams({
+                    To: to,
+                    Subject: subject,
+                    Body: enhancedBody
+                });
+                
+                const fullUrl = `${automationUrl}?${params.toString()}`;
+                
+                log(`🔗 Request URL length: ${fullUrl.length}`, 'info');
+                log(`🔗 Webhook: ${automationUrl}`, 'info');
+                log('⏳ Sending GET request to Contentstack...', 'info');
+                
+                const startTime = Date.now();
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const endTime = Date.now();
+                
+                log(`⏱️ Response time: ${endTime - startTime}ms`, 'info');
+                log(`📨 Response status: ${response.status} ${response.statusText}`, 
+                    response.ok ? 'success' : 'error');
+                
+                // Log response headers
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                log(`📨 Response headers: ${JSON.stringify(headers)}`, 'info');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ EMAIL FAILED`, 'error');
+                    log(`❌ Status: ${response.status} ${response.statusText}`, 'error');
+                    log(`❌ Error body: ${errorText}`, 'error');
+                    updateStatus('❌ Failed', 'status-failed');
+                    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'error');
+                    return false;
+                }
+                
+                const result = await response.text();
+                log(`✅ Response body: ${result}`, 'success');
+                log(`✅ Email sent successfully!`, 'success');
+                log(`📧 Email sent to: ${to}`, 'success');
+                log(`🎯 Test ID: ${testId}`, 'success');
+                log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
+                log('✨ TEST COMPLETED SUCCESSFULLY', 'success');
+                log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
+                
+                updateStatus('✅ Email Sent!', 'status-success');
+                
+                log('', 'info');
+                log('📬 Next Steps:', 'warning');
+                log('1. Check your email inbox: ' + to, 'warning');
+                log('2. Check spam/junk folder', 'warning');
+                log('3. Wait 1-2 minutes for delivery', 'warning');
+                log('4. If not received, check Contentstack automation logs', 'warning');
+                
+                return true;
+            } catch (error) {
+                log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'error');
+                log('❌ CRITICAL ERROR:', 'error');
+                log(`❌ Error type: ${error.constructor.name}`, 'error');
+                log(`❌ Error message: ${error.message}`, 'error');
+                log(`❌ Full error: ${error.toString()}`, 'error');
+                if (error.stack) {
+                    log(`❌ Stack: ${error.stack}`, 'error');
+                }
+                log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'error');
+                
+                updateStatus('❌ Error Occurred', 'status-failed');
+                return false;
+            }
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            sendBtn.disabled = true;
+            
+            const to = document.getElementById('emailTo').value;
+            const subject = document.getElementById('emailSubject').value;
+            const body = document.getElementById('emailBody').value;
+            
+            await sendEmail(to, subject, body);
+            
+            sendBtn.disabled = false;
+        });
+        
+        // Initial log
+        log('🎯 Email Service Tester Ready', 'success');
+        log('Fill in the form and click "Send Test Email" to begin', 'info');
+        updateStatus('⏳ Ready to send', 'status-waiting');
+    </script>
+</body>
+</html>
