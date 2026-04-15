@@ -1,12 +1,24 @@
 /**
- * Lytics jstag — enabled in production builds, or in dev when
- * REACT_APP_LYTICS_ENABLE_IN_DEV=true (restart dev server after changing .env).
- * Tag URL can be overridden with REACT_APP_LYTICS_TAG_SRC.
+ * Lytics jstag — enabled when:
+ * - NODE_ENV is production (normal `npm run build`), or
+ * - REACT_APP_LYTICS_ENABLE_IN_DEV=true (local npm start), or
+ * - REACT_APP_LYTICS_ENABLE=true (use on CI / hosts that build with NODE_ENV=development)
+ *
+ * Set REACT_APP_LYTICS_ENABLE=false to force off even in production.
+ * Tag URL: REACT_APP_LYTICS_TAG_SRC.
+ *
+ * After load, check `window.__GRABO_LYTICS__` in the console if `jstag` is missing.
  */
 
 function lyticsRuntimeEnabled(): boolean {
+  if (process.env.REACT_APP_LYTICS_ENABLE === 'false') return false;
+  if (process.env.REACT_APP_LYTICS_ENABLE === 'true') return true;
   if (process.env.NODE_ENV === 'production') return true;
   return process.env.REACT_APP_LYTICS_ENABLE_IN_DEV === 'true';
+}
+
+function setLyticsDiag(status: string): void {
+  (window as Window & { __GRABO_LYTICS__?: string }).__GRABO_LYTICS__ = status;
 }
 
 const DEFAULT_TAG_SRC =
@@ -23,6 +35,7 @@ type JstagApi = {
     onerror?: (err?: unknown) => void
   ) => unknown;
   pageView: (...args: unknown[]) => void;
+  loadEntity?: (cb?: (profile: unknown) => void) => void;
   [key: string]: unknown;
 };
 
@@ -105,30 +118,45 @@ function installJstagStub(): void {
 
 /** Call once at app bootstrap (before React render). */
 export function initLytics(): void {
-  if (!lyticsRuntimeEnabled()) return;
-  if (initStarted) return;
+  setLyticsDiag('init_invoked');
+  if (!lyticsRuntimeEnabled()) {
+    setLyticsDiag('runtime_disabled');
+    return;
+  }
+  if (initStarted) {
+    setLyticsDiag('already_started');
+    return;
+  }
   initStarted = true;
 
   try {
     installJstagStub();
     window.jstag?.init({ src: tagSrc() });
+    setLyticsDiag('stub_installed');
   } catch (e) {
+    setLyticsDiag('init_error');
     console.error('[Lytics] init failed', e);
   }
 }
 
-/** Fire on each route (including initial load). Safe no-op when disabled or before jstag exists. */
+/**
+ * SPA route change: page view + profile reload (Lytics docs recommend both on every route change).
+ * Safe no-op when disabled or before jstag exists.
+ */
 export function trackLyticsPageView(): void {
   if (!lyticsRuntimeEnabled()) return;
   try {
     window.jstag?.pageView();
+    window.jstag?.loadEntity?.();
   } catch (e) {
-    console.error('[Lytics] pageView failed', e);
+    console.error('[Lytics] route tracking failed', e);
   }
 }
 
 declare global {
   interface Window {
     jstag?: JstagApi;
+    /** Set by initLytics: init_invoked | runtime_disabled | stub_installed | init_error | … */
+    __GRABO_LYTICS__?: string;
   }
 }

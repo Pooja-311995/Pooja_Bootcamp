@@ -3,7 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { trackLyticsPageView } from '../services/lytics';
 
 /**
- * Sends a Lytics page view on every client-side navigation (and on first load).
+ * On each client-side navigation (and first load): Lytics pageView + loadEntity
+ * so page context and personalization profile stay in sync (Lytics SPA guidance).
  */
 export default function LyticsRouteTracker() {
   const location = useLocation();
