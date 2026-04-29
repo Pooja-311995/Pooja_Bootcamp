@@ -13,7 +13,8 @@ import { OrderProvider } from './contexts/OrderContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { PersonalizeProvider } from './contexts/PersonalizeContext';
 import { initializeLivePreview } from './utils/livePreview';
-import LyticsRouteTracker from './components/LyticsRouteTracker';
+import LyticsProvider from './components/LyticsProvider';
+import LyticsPageTracker from './components/LyticsPageTracker';
 // Import email service to make test functions globally available
 import './services/emailService';
 
@@ -48,30 +49,32 @@ function App() {
   }, []);
 
   return (
-    <CartProvider>
-      <OrderProvider>
-        <PersonalizeProvider>
-          <NotificationProvider>
-            <Router>
-              <LyticsRouteTracker />
-              <div className="wrapper">
-                <Header />
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Navigate to="/" replace />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/menu" element={<Menu />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/track-order" element={<TrackOrder />} />
-                </Routes>
-                <Footer />
-                <NotificationContainer />
-              </div>
-            </Router>
-          </NotificationProvider>
-        </PersonalizeProvider>
-      </OrderProvider>
-    </CartProvider>
+    <LyticsProvider>
+      <CartProvider>
+        <OrderProvider>
+          <PersonalizeProvider>
+            <NotificationProvider>
+              <Router>
+                <LyticsPageTracker />
+                <div className="wrapper">
+                  <Header />
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/home" element={<Navigate to="/" replace />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/track-order" element={<TrackOrder />} />
+                  </Routes>
+                  <Footer />
+                  <NotificationContainer />
+                </div>
+              </Router>
+            </NotificationProvider>
+          </PersonalizeProvider>
+        </OrderProvider>
+      </CartProvider>
+    </LyticsProvider>
   );
 }
 
