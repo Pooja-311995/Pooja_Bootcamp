@@ -120,20 +120,20 @@ const initPersonalizeSdk = async (userId?: string) => {
       console.log('♻️  Using saved user UID from previous session');
     }
 
-    // Create a request-like object for browser context
+    // SDK expects Fetch-style Request: `headers` must be a Headers instance (`.get()`), not a plain object.
+    const headers = new Headers();
+    headers.set('user-agent', navigator.userAgent);
+    headers.set('accept-language', navigator.language);
+
     const requestContext = {
       url: window.location.href,
-      headers: {
-        'user-agent': navigator.userAgent,
-        'accept-language': navigator.language,
-      },
+      headers,
       method: 'GET',
     };
 
-    // Initialize the SDK with userId and request context
     const personalizeSdk = await Personalize.init(projectUid, {
       userId: effectiveUserId,
-      request: requestContext as any, // Browser request context
+      request: requestContext as any,
     });
 
     console.log('✅ Personalize SDK initialized successfully');

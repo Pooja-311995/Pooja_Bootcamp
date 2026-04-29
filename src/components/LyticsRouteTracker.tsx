@@ -1,17 +1,32 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { trackLyticsPageView } from '../services/lytics';
 
 /**
- * On each client-side navigation (and first load): Lytics pageView + loadEntity
- * so page context and personalization profile stay in sync (Lytics SPA guidance).
+ * SPA: Lytics counts full page loads by default; client-side route changes need
+ * pageView (and loadEntity for profile/campaign refresh). Safe no-op if jstag missing.
  */
 export default function LyticsRouteTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    trackLyticsPageView();
+    const j = window.jstag;
+    if (!j) return;
+    try {
+      j.pageView();
+      j.loadEntity?.();
+    } catch {
+      /* ignore */
+    }
   }, [location.pathname, location.search, location.hash]);
 
   return null;
+}
+
+declare global {
+  interface Window {
+    jstag?: {
+      pageView: () => void;
+      loadEntity?: () => void;
+    };
+  }
 }

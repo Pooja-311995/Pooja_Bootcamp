@@ -2,6 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Lytics JS Tag v3: load early in <head> (after charset). One shell for CRA; SPA pageView via LyticsRouteTracker. -->
+    <script type="text/javascript">
+      !function(){"use strict";var o=window.jstag||(window.jstag={}),r=[];function n(e){o[e]=function(){for(var n=arguments.length,t=new Array(n),i=0;i<n;i++)t[i]=arguments[i];r.push([e,t])}}n("send"),n("mock"),n("identify"),n("pageView"),n("unblock"),n("getid"),n("setid"),n("loadEntity"),n("getEntity"),n("on"),n("once"),n("call");o.loadScript=function(n,t,i){var e=document.createElement("script");e.async=!0,e.src=n,e.onload=t,e.onerror=i;var o=document.getElementsByTagName("script")[0];o.parentNode.insertBefore(e,o)},o.init=function n(t){o.config=t,t.callback?o.loadScript(t.src,function(){var n=window.jstag;for(var e in o.config=t,o)n[e]||(n[e]=o[e]);r.forEach(function(n){n[0]in window.jstag&&window.jstag[n[0]].apply(window.jstag,n[1])}),r=[],"init"in n&&n.init(t),t.callback(n)}):o.loadScript(t.src)},o.init({src:"https://staging.lytics.io/api/tag/a011be583d24cc50ef62847cad09eaaa/latest.min.js",cid:"a011be583d24cc50ef62847cad09eaaa"})}();
+      jstag.pageView();
+    </script>
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
@@ -25,8 +30,6 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
-    <!-- Lytics: external script so CSP can allow same-origin JS without unsafe-inline. config.version appears after latest.min.js loads. -->
-    <script src="%PUBLIC_URL%/lytics-bootstrap.js"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
